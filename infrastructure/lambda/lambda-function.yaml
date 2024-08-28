@@ -1,0 +1,115 @@
+apiVersion: lambda.aws.upbound.io/v1beta2
+kind: Function
+metadata:
+  name: example-lambda-function
+spec:
+  forProvider:
+    handler: index.py
+    packageType: Zip
+    region: us-east-1
+    roleSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example-role
+    runtime: python3.9
+    s3Bucket: official-provider-test-data
+    s3Key: hello-python.zip
+    timeout: 60
+    vpcConfig:
+      securityGroupIdSelector:
+        matchLabels:
+          testing.upbound.io/example-name: example-security-group
+      subnetIdSelector:
+        matchLabels:
+          testing.upbound.io/example-name: example-subnet
+  providerConfigRef:
+    name: default
+
+---
+
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: Role
+metadata:
+  name: example-role
+  labels:
+    testing.upbound.io/example-name: example-role
+spec:
+  forProvider:
+    assumeRolePolicy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Action": "sts:AssumeRole",
+            "Principal": {
+              "Service": ["lambda.amazonaws.com"]
+            },
+            "Effect": "Allow",
+            "Sid": ""
+          }
+        ]
+      }
+
+---
+
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: Policy
+metadata:
+  name: example-policy
+  labels:
+    testing.upbound.io/example-name: example-policy
+spec:
+  forProvider:
+    policy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Action": [
+                "ec2:DescribeVpcEndpoints",
+                "ec2:DescribeRouteTables",
+                "ec2:CreateNetworkInterface",
+                "ec2:DeleteNetworkInterface",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeVpcAttribute",
+                "ec2:DescribeNetworkInterfaces"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+          }
+        ]
+      }
+
+---
+
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: example-role-policy-attachment
+  labels:
+    testing.upbound.io/example-name: example-role-policy-attachment
+spec:
+  forProvider:
+    policyArnSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example-policy
+    roleSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example-role
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: SecurityGroup
+metadata:
+  name: example-security-group
+  labels:
+    testing.upbound.io/example-name: example-security-group
+spec:
+  forProvider:
+    description: Allow TLS inbound traffic
+    name: allow_tls
+    region: us-east-1
+    vpcIdRef:
+      name: existing-vpc-name
+

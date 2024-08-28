@@ -1,8 +1,8 @@
-apiVersion: lambda.aws.upbound.io/v1beta1
+apiVersion: lambda.aws.upbound.io/v1alpha1
 kind: Function
 metadata:
   annotations:
-    meta.upbound.io/example-id: lambda/v1beta1/function
+    meta.upbound.io/example-id: lambda/v1alpha1/function
     uptest.upbound.io/timeout: "3600"
   labels:
     testing.upbound.io/example-name: example

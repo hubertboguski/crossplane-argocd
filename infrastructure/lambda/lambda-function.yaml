@@ -99,17 +99,17 @@ spec:
 
 ---
 
-apiVersion: ec2.aws.upbound.io/v1beta1
-kind: SecurityGroup
-metadata:
-  name: example-security-group
-  labels:
-    testing.upbound.io/example-name: example-security-group
-spec:
-  forProvider:
-    description: Allow TLS inbound traffic
-    name: allow_tls
-    region: us-east-1
-    vpcIdRef:
-      name: existing-vpc-name
+#apiVersion: ec2.aws.upbound.io/v1beta1
+#kind: SecurityGroup
+#metadata:
+#  name: example-security-group
+#  labels:
+#    testing.upbound.io/example-name: example-security-group
+#spec:
+#  forProvider:
+#description: Allow TLS inbound traffic
+#    name: allow_tls
+#    region: us-east-1
+#    vpcIdRef:
+#      name: existing-vpc-name
 
